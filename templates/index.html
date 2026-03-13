@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Additional inline styles to ensure modern look */
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #06d6a0;
+            --danger-color: #ef476f;
+            --warning-color: #ffd166;
+            --dark-color: #2b2d42;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+            --border-radius: 16px;
+            --card-radius: 20px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 25px 35px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--primary-color);
+            margin: 0;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        .primary-btn i {
+            font-size: 1.2rem;
+        }
+
+        .dashboard-title {
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+
+        .floor {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .floor:hover {
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .floor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .floor-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .floor-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .floor h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .floor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .room {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .room-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .room-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .room h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d64161;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #05b586;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--gray-color);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .bed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .bed-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .bed-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .bed-card.occupied {
+            background: linear-gradient(135deg, #f43f5e, #e11d48);
+            color: white;
+        }
+
+        .bed-card.empty {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .tenant-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .bed-card .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .bed-card:hover .delete-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .bed-card .delete-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 30px;
+            padding: 35px;
+            width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .popup-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-color);
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            transform: rotate(90deg);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: #f8fafc;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .form-actions button:first-child {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .form-actions button:first-child:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .form-actions button:last-child {
+            background: #f1f5f9;
+            color: var(--dark-color);
+        }
+
+        .form-actions button:last-child:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        #tenantInfo {
+            text-align: center;
+        }
+
+        #tenantInfo img {
+            border-radius: 16px;
+            margin: 10px auto;
+            max-width: 100%;
+            display: block;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        #tenantInfo p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            color: var(--dark-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .action-buttons button:first-child {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .action-buttons button:first-child:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .action-buttons button:nth-child(2) {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .action-buttons button:nth-child(2):hover {
+            background: #d64161;
+            transform: translateY(-2px);
+        }
+
+        .action-buttons button:last-child {
+            background: #f1f5f9;
+            color: var(--dark-color);
+        }
+
+        .action-buttons button:last-child:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: var(--dark-color);
+            color: white;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        [data-tooltip]:hover:before {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 10px);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            line-height: 1.2;
+        }
+
+        .stat-info p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .app-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .floor-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .bed-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .popup-content {
+                width: 90%;
+                padding: 25px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-header">
+            <h1>
+                <i class="fas fa-building"></i>
+                PG Management System
+            </h1>
+            <button class="primary-btn" onclick="addFloor()" data-tooltip="Add a new floor to the building">
+                <i class="fas fa-plus-circle"></i>
+                Add New Floor
+            </button>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalFloors">0</h3>
+                    <p>Total Floors</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalRooms">0</h3>
+                    <p>Total Rooms</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bed"></i></div>
+                <div class="stat-info">
+                    <h3 id="totalBeds">0</h3>
+                    <p>Total Beds</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                <div class="stat-info">
+                    <h3 id="occupiedBeds">0</h3>
+                    <p>Occupied</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-plus"></i></div>
+                <div class="stat-info">
+                    <h3 id="availableBeds">0</h3>
+                    <p>Available</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="dashboard-title">
+            <i class="fas fa-chart-line"></i>
+            PG Dashboard
+        </h2>
+
+        <div id="dashboard" class="dashboard"></div>
+    </div>
+
+    <!-- TENANT FORM POPUP -->
+    <div id="tenantPopup" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3><i class="fas fa-user-plus"></i> Add New Tenant</h3>
+                <button class="close-btn" onclick="closePopup()" data-tooltip="Close form"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> Full Name *</label>
+                <input class="form-input" id="p_name" placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user-tie"></i> Father's Name</label>
+                <input class="form-input" id="p_father" placeholder="Enter father's name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user-tie"></i> Mother's Name</label>
+                <input class="form-input" id="p_mother" placeholder="Enter mother's name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-map-marker-alt"></i> Address</label>
+                <textarea class="form-textarea" id="p_address" placeholder="Enter full address"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Street</label>
+                <input class="form-input" id="p_street" placeholder="Enter street name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Area</label>
+                <input class="form-input" id="p_area" placeholder="Enter area/locality">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pincode</label>
+                <input class="form-input" id="p_pincode" placeholder="Enter pincode">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-envelope"></i> Email Address</label>
+                <input class="form-input" id="p_email" type="email" placeholder="Enter email address">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-phone"></i> Mobile Number *</label>
+                <input class="form-input" id="p_phone" placeholder="Enter 10-digit mobile number">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-id-card"></i> Aadhar Number</label>
+                <input class="form-input" id="p_aadhar_number" placeholder="Enter 12-digit Aadhar number">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-calendar"></i> Date of Birth</label>
+                <input class="form-input" id="p_dob" type="date">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-money-bill"></i> Deposit Amount</label>
+                <input class="form-input" id="p_deposit" placeholder="Enter deposit amount" type="number">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-money-bill-wave"></i> Monthly Rent</label>
+                <input class="form-input" id="p_rent" placeholder="Enter monthly rent" type="number">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-door-open"></i> Room Type</label>
+                <input class="form-input" id="p_room_type" placeholder="e.g., 3 Sharing AC, 2 Sharing Non-AC">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-briefcase"></i> Office/Company Name</label>
+                <input class="form-input" id="p_office_name" placeholder="Enter office/company name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-map-marker-alt"></i> Office Address</label>
+                <input class="form-input" id="p_office_address" placeholder="Enter office address">
+            </div>
+            
+            <h4><i class="fas fa-phone-alt"></i> Emergency Contact</h4>
+            
+            <div class="form-group">
+                <label class="form-label">Contact Name</label>
+                <input class="form-input" id="p_emergency_name" placeholder="Enter emergency contact name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input class="form-input" id="p_emergency_phone" placeholder="Enter emergency phone number">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Relationship</label>
+                <input class="form-input" id="p_emergency_relation" placeholder="e.g., Father, Mother, Friend">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-calendar-check"></i> Check-in Date</label>
+                <input class="form-input" type="date" id="p_checkin">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-camera"></i> Photo</label>
+                <div class="file-upload" onclick="document.getElementById('p_photo').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload tenant photo</p>
+                </div>
+                <input type="file" id="p_photo" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-id-card"></i> Aadhaar Card</label>
+                <div class="file-upload" onclick="document.getElementById('p_aadhar').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload Aadhaar card image</p>
+                </div>
+                <input type="file" id="p_aadhar" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="form-actions">
+                <button onclick="saveTenant()"><i class="fas fa-save"></i> Save Tenant</button>
+                <button onclick="closePopup()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TENANT DETAILS POPUP -->
+    <div id="detailsPopup" class="popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3><i class="fas fa-user-circle"></i> Tenant Details</h3>
+                <button class="close-btn" onclick="closeDetails()" data-tooltip="Close"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="tenantInfo"></div>
+            
+            <div class="action-buttons">
+                <button onclick="downloadTenant()" data-tooltip="Download registration form"><i class="fas fa-download"></i> Download Form</button>
+                <button onclick="removeTenant()" data-tooltip="Remove tenant from this bed"><i class="fas fa-user-minus"></i> Remove Tenant</button>
+                <button onclick="closeDetails()" data-tooltip="Go back"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+        <div class="loading" style="width: 50px; height: 50px;"></div>
+    </div>
+
+    <script>
+        let selectedFloor = null;
+        let selectedRoom = null;
+        let selectedBed = null;
+        let selectedTenant = null;
+
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Update statistics
+        function updateStats(data) {
+            let totalFloors = 0;
+            let totalRooms = 0;
+            let totalBeds = 0;
+            let occupiedBeds = 0;
+
+            const floors = {};
+
+            data.forEach(b => {
+                if (!b.floor) return;
+                if (!floors[b.floor]) {
+                    floors[b.floor] = {};
+                    totalFloors++;
+                }
+                if (!floors[b.floor][b.room]) {
+                    floors[b.floor][b.room] = [];
+                    totalRooms++;
+                }
+                if (b.bed) {
+                    totalBeds++;
+                    if (b.tenant) occupiedBeds++;
+                }
+            });
+
+            document.getElementById('totalFloors').textContent = totalFloors;
+            document.getElementById('totalRooms').textContent = totalRooms;
+            document.getElementById('totalBeds').textContent = totalBeds;
+            document.getElementById('occupiedBeds').textContent = occupiedBeds;
+            document.getElementById('availableBeds').textContent = totalBeds - occupiedBeds;
+        }
+
+        /* ADD FLOOR */
+        function addFloor() {
+            const floor = prompt("Enter Floor Name (e.g., Ground Floor, First Floor)");
+            if (!floor) return;
+
+            showLoading();
+            fetch("/add_floor", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error adding floor");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* DELETE FLOOR */
+        function deleteFloor(floor) {
+            if (!confirm("⚠️ Are you sure you want to delete this floor and all its contents? This action cannot be undone.")) return;
+
+            showLoading();
+            fetch("/delete_floor", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error deleting floor");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* ADD ROOM */
+        function addRoom(floor) {
+            const room = prompt("Enter Room Number/Name");
+            if (!room) return;
+
+            showLoading();
+            fetch("/add_room", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor, room: room })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error adding room");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* DELETE ROOM */
+        function deleteRoom(floor, room) {
+            if (!confirm("⚠️ Are you sure you want to delete this room and all its beds?")) return;
+
+            showLoading();
+            fetch("/delete_room", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor, room: room })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error deleting room");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* ADD BEDS */
+        function addBeds(floor, room) {
+            const beds = prompt("How many beds in this room?", "3");
+            if (!beds || isNaN(beds) || beds < 1) return;
+
+            showLoading();
+            fetch("/add_beds", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor, room: room, beds: parseInt(beds) })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error adding beds");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* DELETE BED */
+        function deleteBed(floor, room, bed, event) {
+            event.stopPropagation();
+
+            if (!confirm("Are you sure you want to delete this bed?")) return;
+
+            showLoading();
+            fetch("/delete_bed", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ floor: floor, room: room, bed: bed })
+            })
+            .then(res => res.json())
+            .then(() => loadBeds())
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error deleting bed");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* LOAD DASHBOARD */
+        function loadBeds() {
+            showLoading();
+            fetch("/beds")
+            .then(res => res.json())
+            .then(data => {
+                updateStats(data);
+                
+                const dashboard = document.getElementById("dashboard");
+                dashboard.innerHTML = "";
+
+                const floors = {};
+
+                data.forEach(b => {
+                    if (!b.floor) return;
+                    if (!floors[b.floor]) floors[b.floor] = {};
+                    if (!floors[b.floor][b.room]) floors[b.floor][b.room] = [];
+                    floors[b.floor][b.room].push(b);
+                });
+
+                // Sort floors for consistent display
+                const sortedFloors = Object.keys(floors).sort();
+
+                for (const floor of sortedFloors) {
+                    const floorDiv = document.createElement("div");
+                    floorDiv.className = "floor";
+
+                    // Floor Header
+                    const floorHeader = document.createElement("div");
+                    floorHeader.className = "floor-header";
+                    floorHeader.innerHTML = `
+                        <div class="floor-title">
+                            <div class="floor-icon"><i class="fas fa-layer-group"></i></div>
+                            <h2>${floor}</h2>
+                        </div>
+                        <div class="floor-actions">
+                            <button class="btn btn-primary" onclick="addRoom('${floor}')" data-tooltip="Add new room to this floor">
+                                <i class="fas fa-plus"></i> Add Room
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteFloor('${floor}')" data-tooltip="Delete this floor">
+                                <i class="fas fa-trash"></i> Delete Floor
+                            </button>
+                        </div>
+                    `;
+                    floorDiv.appendChild(floorHeader);
+
+                    // Sort rooms for consistent display
+                    const sortedRooms = Object.keys(floors[floor]).sort();
+
+                    // Rooms
+                    for (const room of sortedRooms) {
+                        if (!room) continue;
+
+                        const roomDiv = document.createElement("div");
+                        roomDiv.className = "room";
+
+                        // Room Header
+                        const roomHeader = document.createElement("div");
+                        roomHeader.className = "room-header";
+                        roomHeader.innerHTML = `
+                            <div class="room-title">
+                                <div class="room-icon"><i class="fas fa-door-open"></i></div>
+                                <h3>Room ${room}</h3>
+                            </div>
+                            <div class="room-actions">
+                                <button class="btn btn-success" onclick="addBeds('${floor}','${room}')" data-tooltip="Add beds to this room">
+                                    <i class="fas fa-bed"></i> Add Beds
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteRoom('${floor}','${room}')" data-tooltip="Delete this room">
+                                    <i class="fas fa-trash"></i> Delete Room
+                                </button>
+                            </div>
+                        `;
+                        roomDiv.appendChild(roomHeader);
+
+                        // Bed Grid
+                        const grid = document.createElement("div");
+                        grid.className = "bed-grid";
+
+                        floors[floor][room].forEach(b => {
+                            if (!b.bed) return;
+
+                            const occupied = b.tenant != null;
+                            const name = occupied ? b.tenant : "Available";
+                            const initial = occupied ? b.tenant.charAt(0).toUpperCase() : "A";
+
+                            const card = document.createElement("div");
+                            card.className = occupied ? "bed-card occupied" : "bed-card empty";
+
+                            card.innerHTML = `
+                                <div class="avatar">
+                                    ${occupied ? 
+                                        `<img src="/photo/${b.id}" alt="${b.tenant}">` : 
+                                        `<div class="avatar-placeholder">${initial}</div>`
+                                    }
+                                </div>
+                                <div class="tenant-name">${name}</div>
+                                <div class="status">
+                                    ${occupied ? 
+                                        '<i class="fas fa-user-check"></i> Occupied' : 
+                                        '<i class="fas fa-plus-circle"></i> Click to Add'
+                                    }
+                                </div>
+                                <button class="delete-btn" onclick="deleteBed('${b.floor}','${b.room}','${b.bed}',event)" data-tooltip="Delete this bed">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+
+                            if (!occupied) {
+                                card.onclick = function() {
+                                    openTenantForm(b.floor, b.room, b.bed);
+                                };
+                            } else {
+                                card.onclick = function() {
+                                    openTenantDetails(b);
+                                };
+                            }
+
+                            grid.appendChild(card);
+                        });
+
+                        roomDiv.appendChild(grid);
+                        floorDiv.appendChild(roomDiv);
+                    }
+
+                    dashboard.appendChild(floorDiv);
+                }
+            })
+            .catch(error => {
+                console.error("Error loading beds:", error);
+                alert("Error loading dashboard data");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* OPEN TENANT FORM */
+        function openTenantForm(floor, room, bed) {
+            selectedFloor = floor;
+            selectedRoom = room;
+            selectedBed = bed;
+            
+            // Clear previous form data
+            document.getElementById("p_name").value = "";
+            document.getElementById("p_father").value = "";
+            document.getElementById("p_mother").value = "";
+            document.getElementById("p_address").value = "";
+            document.getElementById("p_street").value = "";
+            document.getElementById("p_area").value = "";
+            document.getElementById("p_pincode").value = "";
+            document.getElementById("p_email").value = "";
+            document.getElementById("p_phone").value = "";
+            document.getElementById("p_aadhar_number").value = "";
+            document.getElementById("p_dob").value = "";
+            document.getElementById("p_deposit").value = "";
+            document.getElementById("p_rent").value = "";
+            document.getElementById("p_room_type").value = "";
+            document.getElementById("p_office_name").value = "";
+            document.getElementById("p_office_address").value = "";
+            document.getElementById("p_emergency_name").value = "";
+            document.getElementById("p_emergency_phone").value = "";
+            document.getElementById("p_emergency_relation").value = "";
+            document.getElementById("p_checkin").value = "";
+            document.getElementById("p_photo").value = "";
+            document.getElementById("p_aadhar").value = "";
+            
+            document.getElementById("tenantPopup").style.display = "flex";
+        }
+
+        /* CLOSE FORM */
+        function closePopup() {
+            document.getElementById("tenantPopup").style.display = "none";
+        }
+
+        /* SAVE TENANT */
+        function saveTenant() {
+            // Validate required fields
+            if (!document.getElementById("p_name").value.trim()) {
+                alert("Please enter tenant name");
+                return;
+            }
+            if (!document.getElementById("p_phone").value.trim()) {
+                alert("Please enter phone number");
+                return;
+            }
+            if (!document.getElementById("p_phone").value.match(/^\d{10}$/)) {
+                alert("Please enter a valid 10-digit phone number");
+                return;
+            }
+
+            showLoading();
+            const formData = new FormData();
+
+            formData.append("name", document.getElementById("p_name").value);
+            formData.append("father", document.getElementById("p_father").value);
+            formData.append("mother", document.getElementById("p_mother").value);
+            formData.append("address", document.getElementById("p_address").value);
+            formData.append("street", document.getElementById("p_street").value);
+            formData.append("area", document.getElementById("p_area").value);
+            formData.append("pincode", document.getElementById("p_pincode").value);
+            formData.append("email", document.getElementById("p_email").value);
+            formData.append("phone", document.getElementById("p_phone").value);
+            formData.append("aadhar_number", document.getElementById("p_aadhar_number").value);
+            formData.append("dob", document.getElementById("p_dob").value);
+            formData.append("deposit", document.getElementById("p_deposit").value);
+            formData.append("rent", document.getElementById("p_rent").value);
+            formData.append("room_type", document.getElementById("p_room_type").value);
+            formData.append("office_name", document.getElementById("p_office_name").value);
+            formData.append("office_address", document.getElementById("p_office_address").value);
+            formData.append("emergency_name", document.getElementById("p_emergency_name").value);
+            formData.append("emergency_phone", document.getElementById("p_emergency_phone").value);
+            formData.append("emergency_relation", document.getElementById("p_emergency_relation").value);
+            formData.append("checkin", document.getElementById("p_checkin").value);
+            formData.append("floor", selectedFloor);
+            formData.append("room", selectedRoom);
+            formData.append("bed", selectedBed);
+
+            const photoFile = document.getElementById("p_photo").files[0];
+            if (photoFile) {
+                formData.append("photo", photoFile);
+            }
+
+            const aadharFile = document.getElementById("p_aadhar").files[0];
+            if (aadharFile) {
+                formData.append("aadhar", aadharFile);
+            }
+
+            fetch("/add_tenant", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closePopup();
+                    loadBeds();
+                    alert("Tenant added successfully!");
+                } else {
+                    alert("Error saving tenant: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Network error occurred");
+            })
+            .finally(() => hideLoading());
+        }
+
+        /* TENANT DETAILS */
+        function openTenantDetails(b) {
+            selectedTenant = b;
+
+            const joinDate = b.join_date ? new Date(b.join_date).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : 'N/A';
+
+            document.getElementById("tenantInfo").innerHTML = `
+                <div class="tenant-profile">
+                    <div class="profile-avatar">
+                        <img src="/photo/${b.id}" alt="${b.tenant}">
+                    </div>
+                    <h3 class="tenant-name-large">${b.tenant}</h3>
+                    <p class="tenant-phone"><i class="fas fa-phone"></i> ${b.phone}</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Join Date</div>
+                            <div class="info-value">${joinDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Location</div>
+                            <div class="info-value">${b.floor} / R-${b.room} / ${b.bed}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="document-section">
+                        <h4 class="document-title"><i class="fas fa-camera"></i> Tenant Photo</h4>
+                        <div class="document-image">
+                            <img src="/photo/${b.id}" alt="Tenant Photo">
+                        </div>
+                    </div>
+                    
+                    <div class="document-section">
+                        <h4 class="document-title"><i class="fas fa-id-card"></i> Aadhaar Card</h4>
+                        <div class="document-image">
+                            <img src="/aadhar/${b.id}" alt="Aadhaar Card">
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("detailsPopup").style.display = "flex";
+        }
+
+        /* DOWNLOAD TENANT FORM */
+        function downloadTenant() {
+            window.open("/download_tenant/" + selectedTenant.id);
+        }
+
+        /* CLOSE DETAILS */
+        function closeDetails() {
+            document.getElementById("detailsPopup").style.display = "none";
+        }
+
+        /* REMOVE TENANT */
+        function removeTenant() {
+            if (!confirm("Are you sure you want to remove this tenant?")) return;
+
+            showLoading();
+            fetch("/remove_tenant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    floor: selectedTenant.floor,
+                    room: selectedTenant.room,
+                    bed: selectedTenant.bed
+                })
+            })
+            .then(res => res.json())
+            .then(() => {
+                closeDetails();
+                loadBeds();
+                alert("Tenant removed successfully!");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error removing tenant");
+            })
+            .finally(() => hideLoading());
+        }
+
+        // Auto-refresh dashboard every 30 seconds
+        setInterval(loadBeds, 30000);
+
+        // Load dashboard on page load
+        loadBeds();
+
+        // Add keyboard support for closing popups
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+                closeDetails();
+            }
+        });
+    </script>
+</body>
+</html>
